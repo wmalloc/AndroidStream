@@ -7,7 +7,6 @@ import android.content.Context;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /*
@@ -25,8 +24,6 @@ import com.loopj.android.http.RequestParams;
 public class StreamClient extends OAuthBaseClient {
     public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class; // Change this
     public static final String REST_URL = "https://api.twitter.com/1.1"; // Change this, base API URL
-    public static final String REST_CONSUMER_KEY = "Your Key";       // Change this
-    public static final String REST_CONSUMER_SECRET = "YOUR Secret; // Change this
     public static final String REST_CALLBACK_URL = "crimson://oauth"; // Change this (here and in manifest)
     public static final int REST_DEFAULT_COUNT = 25;
     
@@ -35,14 +32,7 @@ public class StreamClient extends OAuthBaseClient {
     }
     
     public void getHomeTimeline(long since_id, AsyncHttpResponseHandler handler) {
-    	String apiURL = getApiUrl("statuses/home_timeline.json");
-    	RequestParams params = new RequestParams();
-    	params.put("count", String.valueOf(REST_DEFAULT_COUNT));
-    	if(since_id > 0)
-    	{
-    		params.put("since_id", String.valueOf(since_id));
-    	}
-    	client.get(apiURL, params, handler);
+        getTimeline("statuses/home_timeline.json", since_id, handler);
     }
     
     public void postTweet(String tweet, AsyncHttpResponseHandler handler) {
@@ -55,6 +45,35 @@ public class StreamClient extends OAuthBaseClient {
     public void getAccountSettings(AsyncHttpResponseHandler handler) {
     	String apiURL = getApiUrl("account/settings.json");
     	client.get(apiURL, null, handler);
+    }
+
+    public void lookupUserForScreenName(String username, AsyncHttpResponseHandler handler) {
+    	RequestParams params = new RequestParams();	
+    	params.put("screen_name", username);
+    	getResource("users/lookup.json", params, handler);
+    }
+    
+    public void getMentions(long since_id, AsyncHttpResponseHandler handler ) {
+        getTimeline("statuses/mentions_timeline.json", since_id, handler);
+     }
+
+    private void getTimeline(String time_line, long since_id, AsyncHttpResponseHandler handler) {
+        RequestParams params = new RequestParams();
+        params.put("count", String.valueOf(REST_DEFAULT_COUNT));
+        if(since_id > 0) {
+            params.put("since_id", String.valueOf(since_id));
+        }
+        getResource(time_line, params, handler);
+    }
+
+    public void getResource(String resource, RequestParams params, AsyncHttpResponseHandler handler) {
+        String apiURL = getApiUrl(resource);
+        client.get(apiURL, params, handler);
+    }
+    
+    public void putResource(String resource,  RequestParams params, AsyncHttpResponseHandler handler) {
+    	String apiURL = getApiUrl(resource);
+    	client.put(apiURL, params, handler);
     }
     
     // CHANGE THIS

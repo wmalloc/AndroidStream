@@ -1,14 +1,11 @@
 package net.crimsonresearch.Stream;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import net.crimsonresearch.Stream.models.Tweet;
+import net.crimsonresearch.Stream.models.User;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -28,13 +25,12 @@ public class TimelineActivity extends Activity {
 	public static final String SCREEN_NAME_KEY="screen_name";
 	PullToRefreshListView lvTweets;
 	TweetsAdapter adapter;
-	long lastId;
-	String screen_name = null;
+	long lastId = 0;
+	User loggedInUser = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		lastId = 0;
 		setContentView(R.layout.activity_timeline);
 		lvTweets = (PullToRefreshListView) findViewById(R.id.lvTweets);
 		lvTweets.setOnScrollListener(new EndlessScrollListener() {
@@ -73,7 +69,7 @@ public class TimelineActivity extends Activity {
 				int count = tweets.size();
 				try {
 					Tweet lastTweet =  tweets.get(count - 1);
-					lastId = lastTweet.getId();
+					lastId = lastTweet.getIdentifier();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -114,7 +110,7 @@ public class TimelineActivity extends Activity {
 	
 	private void ComposeTweet() {
 		Intent i = new Intent(getApplicationContext(), ComposeTweet.class);
-		i.putExtra(SCREEN_NAME_KEY, screen_name);
+		i.putExtra(SCREEN_NAME_KEY, loggedInUser.getScreenName());
 		startActivityForResult(i, COMPOSE_ACTIVITY);
 	}
 	
@@ -128,12 +124,9 @@ public class TimelineActivity extends Activity {
     public void getUserInfo() {
 		StreamClientApp.getRestClient().getAccountSettings(new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject jsonUser) {
-				try {
-					screen_name = jsonUser.getString(SCREEN_NAME_KEY);
-					setTitle("@" + screen_name);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				loggedInUser = new User(jsonUser);
+				System.out.println(jsonUser.toString());
+				setTitle("@" + loggedInUser.getScreenName());
 			}
 			
             public void onFailure(Throwable e) {

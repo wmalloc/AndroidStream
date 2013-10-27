@@ -47,7 +47,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		
 		try {
 			TextView tvDate = (TextView)view.findViewById(R.id.tvDate);
-			String date = twitterHumanFriendlyDate(tweet.createdAt());
+			String date = twitterHumanFriendlyDate(tweet.getCreatedAt());
 			tvDate.setText(date);
 		} catch (Exception e) {
 			e.printStackTrace();
