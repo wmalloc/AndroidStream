@@ -16,10 +16,12 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
+        android:background="#eeeeee"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btnCancel"
+           	android:background="@drawable/states_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onCancel"
@@ -27,6 +29,8 @@
 
         <Button
             android:id="@+id/btnTweet"
+            android:background="@drawable/states_tweet_button"
+            android:textColor="#ffffff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="125dp"
@@ -56,5 +60,13 @@
         android:layout_alignTop="@+id/etTweetText"
         android:hint="@string/max_length_placeholder"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ProgressBar
+        android:id="@+id/pbPostingTweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="38dp" />
 
 </RelativeLayout>
