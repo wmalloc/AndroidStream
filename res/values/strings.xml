@@ -12,4 +12,6 @@
     <string name="button_post">Post</string>
     <string name="action_compose">Compose</string>
     <string name="max_length_placeholder">0</string>
+    <string name="activity_tweet">Tweet</string>
+    <string name="activity_cancel">Cancel</string>
 </resources>

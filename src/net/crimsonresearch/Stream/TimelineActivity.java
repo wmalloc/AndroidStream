@@ -1,10 +1,15 @@
 package net.crimsonresearch.Stream;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import net.crimsonresearch.Stream.models.Tweet;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,9 +25,11 @@ import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
 public class TimelineActivity extends Activity {
 	public static final int COMPOSE_ACTIVITY = 1;
+	public static final String SCREEN_NAME_KEY="screen_name";
 	PullToRefreshListView lvTweets;
 	TweetsAdapter adapter;
 	long lastId;
+	String screen_name = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,7 @@ public class TimelineActivity extends Activity {
 			}
 		});
 		customLoadMoreDataFromApi(0);
+		getUserInfo();
 	}
 
 	private void customLoadMoreDataFromApi(int page) {
@@ -106,6 +114,7 @@ public class TimelineActivity extends Activity {
 	
 	private void ComposeTweet() {
 		Intent i = new Intent(getApplicationContext(), ComposeTweet.class);
+		i.putExtra(SCREEN_NAME_KEY, screen_name);
 		startActivityForResult(i, COMPOSE_ACTIVITY);
 	}
 	
@@ -115,4 +124,21 @@ public class TimelineActivity extends Activity {
 			customLoadMoreDataFromApi(0);
 		}
 	}
+	
+    public void getUserInfo() {
+		StreamClientApp.getRestClient().getAccountSettings(new JsonHttpResponseHandler() {
+			public void onSuccess(JSONObject jsonUser) {
+				try {
+					screen_name = jsonUser.getString(SCREEN_NAME_KEY);
+					setTitle("@" + screen_name);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+            public void onFailure(Throwable e) {
+                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
+            }
+		});
+    }
 }

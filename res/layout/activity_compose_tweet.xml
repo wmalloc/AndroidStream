@@ -8,33 +8,52 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ComposeTweet" >
 
-    <Button
-        android:id="@+id/btnPost"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etTweetText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        android:onClick="onPost"
-        android:text="@string/button_post" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onCancel"
+            android:text="@string/activity_cancel" />
+
+        <Button
+            android:id="@+id/btnTweet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="125dp"
+            android:onClick="onTweet"
+            android:text="@string/activity_tweet" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etTweetText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvCharCount"
+        android:layout_below="@+id/linearLayout1"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
         android:ems="10"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:minHeight="50dp" >
+
+        <requestFocus />
+    </EditText>
 
     <TextView
         android:id="@+id/tvCharCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_alignRight="@+id/linearLayout1"
+        android:layout_alignTop="@+id/etTweetText"
         android:hint="@string/max_length_placeholder"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

@@ -1,22 +1,13 @@
 package net.crimsonresearch.Stream;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 import com.codepath.oauth.OAuthLoginActivity;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class LoginActivity extends OAuthLoginActivity<StreamClient> {
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,24 +25,6 @@ public class LoginActivity extends OAuthLoginActivity<StreamClient> {
 	// i.e Display application "homepage"
     @Override
     public void onLoginSuccess() {
-		StreamClientApp.getRestClient().getAccountSettings(new JsonHttpResponseHandler() {
-			public void onSuccess(JSONObject jsonUser) {
-				try {
-					String screen_name = jsonUser.getString("screen_name");
-					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-					Editor editor = pref.edit();
-					editor.putString("screen_name", screen_name);
-					editor.commit();
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-			
-            public void onFailure(Throwable e) {
-                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
-            }
-		});
     	Intent i = new Intent(this, TimelineActivity.class);
     	startActivity(i);
     }

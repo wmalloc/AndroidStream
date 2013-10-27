@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +25,13 @@ public class ComposeTweet extends Activity {
     
 	TextView tvCharCount;
 	EditText etTweetText;
+	ProgressBar pbPostingTweet;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_compose_tweet);
+		pbPostingTweet = (ProgressBar) findViewById(R.id.pbPostingTweet);
+		pbPostingTweet.setIndeterminate(true);
 		tvCharCount = (TextView) findViewById(R.id.tvCharCount);
 		tvCharCount.setText(String.valueOf(MAX_TWEET_LENGTH));
 		
@@ -49,6 +53,9 @@ public class ComposeTweet extends Activity {
 			public void afterTextChanged(Editable s) {
 			}
 		});
+		
+		String screen_name = (String) getIntent().getStringExtra(TimelineActivity.SCREEN_NAME_KEY);
+		setTitle(screen_name);
 	}
 
 	@Override
@@ -58,7 +65,8 @@ public class ComposeTweet extends Activity {
 		return true;
 	}
 
-	public void onPost(View view) {
+	public void onTweet(View view) {
+		pbPostingTweet.startAnimation(null);
 		String tweet = etTweetText.getText().toString();
 		if(null != tweet && tweet.length() > 0) {
 			StreamClientApp.getRestClient().postTweet(tweet, new JsonHttpResponseHandler () {
@@ -81,5 +89,11 @@ public class ComposeTweet extends Activity {
 			     }
 			});
 		}
+	}
+	
+	public void onCancel(View view) {
+		Intent i = new Intent();
+		setResult(Activity.RESULT_CANCELED, i);
+		finish();
 	}
 }

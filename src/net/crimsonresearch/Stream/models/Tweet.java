@@ -25,6 +25,9 @@ public class Tweet extends BaseModel {
         return getBoolean("favorited");
     }
 
+    public String createdAt() {
+    	return getString("created_at");
+    }
     public boolean isRetweeted() {
         return getBoolean("retweeted");
     }
