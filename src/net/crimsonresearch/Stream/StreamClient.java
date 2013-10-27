@@ -36,15 +36,13 @@ public class StreamClient extends OAuthBaseClient {
     }
     
     public void postTweet(String tweet, AsyncHttpResponseHandler handler) {
-    	String apiURL = getApiUrl("statuses/update.json");
     	RequestParams params = new RequestParams();
     	params.put("status", tweet);
-    	client.post(apiURL, params, handler);
-    }
+    	postResource("statuses/update.json", params, handler);
+     }
     
     public void getAccountSettings(AsyncHttpResponseHandler handler) {
-    	String apiURL = getApiUrl("account/settings.json");
-    	client.get(apiURL, null, handler);
+    	getResource("account/settings.json", null, handler);
     }
 
     public void lookupUserForScreenName(String username, AsyncHttpResponseHandler handler) {
@@ -55,7 +53,7 @@ public class StreamClient extends OAuthBaseClient {
     
     public void getMentions(long since_id, AsyncHttpResponseHandler handler ) {
         getTimeline("statuses/mentions_timeline.json", since_id, handler);
-     }
+    }
 
     private void getTimeline(String time_line, long since_id, AsyncHttpResponseHandler handler) {
         RequestParams params = new RequestParams();
@@ -76,14 +74,8 @@ public class StreamClient extends OAuthBaseClient {
     	client.put(apiURL, params, handler);
     }
     
-    // CHANGE THIS
-    // DEFINE METHODS for different API endpoints here   
-    /* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-     * 	  i.e getApiUrl("statuses/home_timeline.json");
-     * 2. Define the parameters to pass to the request (query or body)
-     *    i.e RequestParams params = new RequestParams("foo", "bar");
-     * 3. Define the request method and make a call to the client
-     *    i.e client.get(apiUrl, params, handler);
-     *    i.e client.post(apiUrl, params, handler);
-     */
+    public void postResource(String resource, RequestParams params, AsyncHttpResponseHandler handler) {
+    	String apiUrl = getApiUrl(resource);
+    	client.post(apiUrl, params, handler);
+    }
 }
