@@ -21,7 +21,7 @@ public class ProfileActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
-		String identifer = (String) getIntent().getStringExtra(USER_PROFILE_KEY);
+		user = (User) getIntent().getSerializableExtra(USER_PROFILE_KEY);
 		StreamClientApp.getRestClient().getMyInfo(new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject jsonUser) {
 				user = new User(jsonUser);
