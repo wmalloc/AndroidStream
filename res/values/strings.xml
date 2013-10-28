@@ -14,4 +14,5 @@
     <string name="max_length_placeholder">0</string>
     <string name="activity_tweet">Tweet</string>
     <string name="activity_cancel">Cancel</string>
+    <string name="action_profile">Profile</string>
 </resources>

@@ -8,5 +8,6 @@
         android:visible="true"
         android:icon="@drawable/ic_action_edit"
         android:enabled="true"/>
+    <item android:id="@+id/action_profile" android:enabled="true" android:visible="true" android:showAsAction="always" android:icon="@drawable/ic_action_person" android:title="@string/action_profile" android:orderInCategory="200"></item>
 
 </menu>

@@ -1,49 +1,36 @@
 package net.crimsonresearch.Stream.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Tweet extends BaseModel {
-    private User user;
+public class Tweet implements Serializable {
+	private static final long serialVersionUID = -2918583239683010830L;
+	JSONObject tweet;
+	private User user;
+	private long identifier;
+	private boolean favorited;
+	private String createdAt;
+	private boolean isRetweeted;
+	private String body;
 
-    public User getUser() {
-        return user;
-    }
-
-    public String getBody() {
-        return getString("text");
-    }
-
-    public long getId() {
-        return getLong("id");
-    }
-
-    public boolean isFavorited() {
-        return getBoolean("favorited");
-    }
-
-    public String createdAt() {
-    	return getString("created_at");
-    }
-    public boolean isRetweeted() {
-        return getBoolean("retweeted");
-    }
-
-    public static Tweet fromJson(JSONObject jsonObject) {
-        Tweet tweet = new Tweet();
-        try {
-            tweet.jsonObject = jsonObject;
-            tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return tweet;
-    }
-
+	public Tweet(JSONObject jsonObject) {
+		try {
+			tweet = jsonObject;
+			setUser(new User(jsonObject.getJSONObject("user")));
+	        setIdentifier(jsonObject.getLong("id"));
+	        setFavorited(jsonObject.getBoolean("favorited"));
+	        setCreatedAt(jsonObject.getString("created_at"));
+	        setRetweeted(jsonObject.getBoolean("retweeted"));
+	        setBody(jsonObject.getString("text"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+	     }
+	}
+	
     public static ArrayList<Tweet> fromJson(JSONArray jsonArray) {
         ArrayList<Tweet> tweets = new ArrayList<Tweet>(jsonArray.length());
 
@@ -56,7 +43,7 @@ public class Tweet extends BaseModel {
                 continue;
             }
 
-            Tweet tweet = Tweet.fromJson(tweetJson);
+            Tweet tweet = new Tweet(tweetJson);
             if (tweet != null) {
                 tweets.add(tweet);
             }
@@ -64,4 +51,52 @@ public class Tweet extends BaseModel {
 
         return tweets;
     }
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public long getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(long identifier) {
+		this.identifier = identifier;
+	}
+
+	public boolean isFavorited() {
+		return favorited;
+	}
+
+	public void setFavorited(boolean favorited) {
+		this.favorited = favorited;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public boolean isRetweeted() {
+		return isRetweeted;
+	}
+
+	public void setRetweeted(boolean isRetweeted) {
+		this.isRetweeted = isRetweeted;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
+	}
 }

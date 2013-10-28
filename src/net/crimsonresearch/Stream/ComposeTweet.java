@@ -26,6 +26,7 @@ public class ComposeTweet extends Activity {
 	TextView tvCharCount;
 	EditText etTweetText;
 	ProgressBar pbPostingTweet;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
