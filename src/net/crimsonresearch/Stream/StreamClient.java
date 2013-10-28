@@ -51,11 +51,17 @@ public class StreamClient extends OAuthBaseClient {
     	getResource("users/lookup.json", params, handler);
     }
     
+    public void lookupUserForIdentifier(String identifier, AsyncHttpResponseHandler handler) {
+    	RequestParams params = new RequestParams();
+    	params.put("user_id", identifier);
+    	getResource("users/lookup.json", params, handler);
+    }
+    
     public void getMentions(long since_id, AsyncHttpResponseHandler handler ) {
         getTimeline("statuses/mentions_timeline.json", since_id, handler);
     }
 
-    private void getTimeline(String time_line, long since_id, AsyncHttpResponseHandler handler) {
+    public void getTimeline(String time_line, long since_id, AsyncHttpResponseHandler handler) {
         RequestParams params = new RequestParams();
         params.put("count", String.valueOf(REST_DEFAULT_COUNT));
         if(since_id > 0) {

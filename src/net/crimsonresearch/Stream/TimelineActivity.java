@@ -1,94 +1,58 @@
 package net.crimsonresearch.Stream;
 
-import java.util.ArrayList;
-
-import net.crimsonresearch.Stream.models.Tweet;
+import net.crimsonresearch.Stream.Fragments.HomeTimelineFragment;
+import net.crimsonresearch.Stream.Fragments.MentionsTimelineFragment;
 import net.crimsonresearch.Stream.models.User;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import eu.erikw.PullToRefreshListView;
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
-
-public class TimelineActivity extends Activity {
+public class TimelineActivity extends FragmentActivity implements TabListener {
 	public static final int COMPOSE_ACTIVITY = 1;
 	public static final String SCREEN_NAME_KEY="screen_name";
-	PullToRefreshListView lvTweets;
-	TweetsAdapter adapter;
-	long lastId = 0;
 	User loggedInUser = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_timeline);
-		lvTweets = (PullToRefreshListView) findViewById(R.id.lvTweets);
-		lvTweets.setOnScrollListener(new EndlessScrollListener() {
-		    @Override
-		    public void onLoadMore(int page, int totalItemsCount) {
-		        customLoadMoreDataFromApi(page); 
-		    }
-	    });
-		
-		lvTweets.setOnRefreshListener(new OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				// Your code to refresh the list contents
-				// Make sure you call listView.onRefreshComplete()
-				// once the loading is done. This can be done from here or any
-				// place such as when the network request has completed successfully.
-				customLoadMoreDataFromApi(0);
-			}
-		});
-		customLoadMoreDataFromApi(0);
+		setupNavigationTabs();
 		getUserInfo();
 	}
-
-	private void customLoadMoreDataFromApi(int page) {
-		if(page == 0) {
-			lastId = 0;
-			try {
-				adapter.clear();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		StreamClientApp.getRestClient().getHomeTimeline(lastId, new JsonHttpResponseHandler() {
-			public void onSuccess(JSONArray jsonTweets) {
-				ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
-				int count = tweets.size();
-				try {
-					Tweet lastTweet =  tweets.get(count - 1);
-					lastId = lastTweet.getIdentifier();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if(null == adapter) {
-					adapter = new TweetsAdapter(getBaseContext(), tweets);
-					lvTweets.setAdapter(adapter);
-				} else {
-					adapter.addAll(tweets);
-				}
-				
-				lvTweets.onRefreshComplete();
-			}
-			
-            public void onFailure(Throwable e) {
-                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
-            }
-		});
-	}
 	
+	private void setupNavigationTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.setDisplayShowTitleEnabled(true);
+		Tab tabHome = actionBar.newTab().setText("Home");
+		tabHome.setTag("HomeTimelineFragment");
+		tabHome.setIcon(R.drawable.ic_action_home);
+		tabHome.setTabListener(this);
+		
+		Tab mentionsTab = actionBar.newTab().setText("Mentions");
+		mentionsTab.setTag("MentionsTimelineFragment");
+		mentionsTab.setIcon(R.drawable.ic_action_mentions);
+		mentionsTab.setTabListener(this);
+		
+		actionBar.addTab(tabHome);
+		actionBar.addTab(mentionsTab);
+		actionBar.selectTab(tabHome);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -117,7 +81,7 @@ public class TimelineActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == COMPOSE_ACTIVITY && resultCode == Activity.RESULT_OK) {
-			customLoadMoreDataFromApi(0);
+			//customLoadMoreDataFromApi(0);
 		}
 	}
 	
@@ -134,4 +98,24 @@ public class TimelineActivity extends Activity {
             }
 		});
     }
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		android.support.v4.app.FragmentTransaction fts = fragmentManager.beginTransaction();
+		if(tab.getTag() == "HomeTimelineFragment") {
+			fts.replace(R.id.frameContainer, new HomeTimelineFragment());
+		} else {
+			fts.replace(R.id.frameContainer, new MentionsTimelineFragment());
+		}
+		fts.commit();
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+	}
 }
