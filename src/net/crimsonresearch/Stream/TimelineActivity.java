@@ -82,7 +82,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener {
 	
 	private void onProfileActivity(User user) {
 		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-		i.putExtra(ProfileActivity.USER_PROFILE_KEY, user);
+		i.putExtra(ProfileActivity.USER_PROFILE_KEY, Long.toString(user.getIdentifier()));
 		startActivity(i);
 	}
 	

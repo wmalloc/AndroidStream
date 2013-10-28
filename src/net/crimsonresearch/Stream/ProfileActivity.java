@@ -1,17 +1,20 @@
 package net.crimsonresearch.Stream;
 
+import net.crimsonresearch.Stream.Fragments.UserTimelineFragment;
+import net.crimsonresearch.Stream.models.User;
+
 import org.json.JSONObject;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import net.crimsonresearch.Stream.models.User;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ProfileActivity extends FragmentActivity {
 	public static final String USER_PROFILE_KEY="user";
@@ -21,8 +24,11 @@ public class ProfileActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
-		user = (User) getIntent().getSerializableExtra(USER_PROFILE_KEY);
-		StreamClientApp.getRestClient().getMyInfo(new JsonHttpResponseHandler() {
+		String user_id = (String) getIntent().getStringExtra(USER_PROFILE_KEY);
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		UserTimelineFragment fragment = (UserTimelineFragment) fragmentManager.findFragmentById(R.id.fragmentUserTimeline);
+		fragment.setUserId(user_id);
+		StreamClientApp.getRestClient().getUserForIdentifier(user_id, new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject jsonUser) {
 				user = new User(jsonUser);
 				setTitle("@" + user.getScreenName());
@@ -33,7 +39,6 @@ public class ProfileActivity extends FragmentActivity {
                 Log.d("DEBUG", "Fetch timeline error: " + e.toString());
             }
 		});
-
 	}
 
 	@Override

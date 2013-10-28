@@ -57,16 +57,16 @@ public class StreamClient extends OAuthBaseClient {
     	getResource("account/settings.json", null, handler);
     }
     
-    public void lookupUserForScreenName(String username, AsyncHttpResponseHandler handler) {
+    public void getUserForScreenName(String username, AsyncHttpResponseHandler handler) {
     	RequestParams params = new RequestParams();	
     	params.put("screen_name", username);
-    	getResource("users/lookup.json", params, handler);
+    	getResource("users/show.json", params, handler);
     }
     
-    public void lookupUserForIdentifier(String identifier, AsyncHttpResponseHandler handler) {
+    public void getUserForIdentifier(String identifier, AsyncHttpResponseHandler handler) {
     	RequestParams params = new RequestParams();
     	params.put("user_id", identifier);
-    	getResource("users/lookup.json", params, handler);
+    	getResource("users/show.json", params, handler);
     }
     
     public void getMentions(long since_id, AsyncHttpResponseHandler handler ) {
@@ -81,7 +81,15 @@ public class StreamClient extends OAuthBaseClient {
         }
         getResource(time_line, params, handler);
     }
-
+    
+    public void getTimeline(String time_line, RequestParams params, AsyncHttpResponseHandler handler) {
+    	if(null == params) {
+    		params = new RequestParams();
+    	}
+        params.put("count", String.valueOf(REST_DEFAULT_COUNT));
+        getResource(time_line, params, handler);
+   }
+    
     public void getResource(String resource, RequestParams params, AsyncHttpResponseHandler handler) {
         String apiURL = getApiUrl(resource);
         client.get(apiURL, params, handler);

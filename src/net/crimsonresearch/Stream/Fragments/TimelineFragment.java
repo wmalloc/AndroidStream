@@ -2,18 +2,14 @@ package net.crimsonresearch.Stream.Fragments;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import eu.erikw.PullToRefreshListView;
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
-
 import net.crimsonresearch.Stream.EndlessScrollListener;
 import net.crimsonresearch.Stream.R;
 import net.crimsonresearch.Stream.StreamClientApp;
 import net.crimsonresearch.Stream.TweetsAdapter;
 import net.crimsonresearch.Stream.models.Tweet;
+
+import org.json.JSONArray;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,11 +17,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import eu.erikw.PullToRefreshListView;
+import eu.erikw.PullToRefreshListView.OnRefreshListener;
+
 public class TimelineFragment extends Fragment {
 	private TweetsAdapter adapter;
-	private Long lastId;
+	private Long lastId = 0L;
 	private PullToRefreshListView lvTweets;
 	private String resource = null;
+	private String userId = null;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -65,7 +68,15 @@ public class TimelineFragment extends Fragment {
 				e.printStackTrace();
 			}
 		}
-		StreamClientApp.getRestClient().getTimeline(resource, lastId, new JsonHttpResponseHandler() {
+		RequestParams params = new RequestParams();
+		if(lastId > 0) {
+			params.put("since_id", Long.toString(lastId));
+		}
+		
+		if(null != userId) {
+			params.put("user_id", userId);
+		}
+		StreamClientApp.getRestClient().getTimeline(resource, params, new JsonHttpResponseHandler() {
 			public void onSuccess(JSONArray jsonTweets) {
 				ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
 				int count = tweets.size();
@@ -121,5 +132,13 @@ public class TimelineFragment extends Fragment {
 
 	public void setLvTweets(PullToRefreshListView lvTweets) {
 		this.lvTweets = lvTweets;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }
