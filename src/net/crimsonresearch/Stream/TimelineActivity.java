@@ -23,7 +23,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class TimelineActivity extends FragmentActivity implements TabListener {
 	public static final int COMPOSE_ACTIVITY = 1;
-	public static final String SCREEN_NAME_KEY="screen_name";
+	public static final String SCREEN_NAME_KEY="screen_name";	
 	User loggedInUser = null;
 	
 	@Override
@@ -65,17 +65,25 @@ public class TimelineActivity extends FragmentActivity implements TabListener {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	    	case R.id.action_compose:
-	            ComposeTweet();
+	            onComposeActivity();
 	            return true;
+	    	case R.id.action_profile:
+	    		onProfileActivity(loggedInUser);
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
 	
-	private void ComposeTweet() {
+	private void onComposeActivity() {
 		Intent i = new Intent(getApplicationContext(), ComposeTweet.class);
 		i.putExtra(SCREEN_NAME_KEY, loggedInUser.getScreenName());
 		startActivityForResult(i, COMPOSE_ACTIVITY);
+	}
+	
+	private void onProfileActivity(User user) {
+		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+		i.putExtra(ProfileActivity.USER_PROFILE_KEY, user.getIdentifier());
+		startActivity(i);
 	}
 	
 	@Override
@@ -86,10 +94,9 @@ public class TimelineActivity extends FragmentActivity implements TabListener {
 	}
 	
     public void getUserInfo() {
-		StreamClientApp.getRestClient().getAccountSettings(new JsonHttpResponseHandler() {
+		StreamClientApp.getRestClient().getMyInfo(new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject jsonUser) {
 				loggedInUser = new User(jsonUser);
-				System.out.println(jsonUser.toString());
 				setTitle("@" + loggedInUser.getScreenName());
 			}
 			

@@ -10,6 +10,7 @@ public class User implements Serializable {
 	private String name;
     private String screenName;
     private String profileImageUrl;
+    private String tagLine;
     private long identifier;
     private int statusesCount;
     private int followersCount;
@@ -25,6 +26,7 @@ public class User implements Serializable {
             setFollowersCount(json.getInt("followers_count"));
             setFriendsCount(json.getInt("friends_count"));
             setName(json.getString("name"));
+            setTagLine(json.getString("description"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,4 +87,12 @@ public class User implements Serializable {
     public void setFriendsCount(int friendsCount) {
         this.friendsCount = friendsCount;
     }
+
+	public String getTagLine() {
+		return tagLine;
+	}
+
+	public void setTagLine(String tagLine) {
+		this.tagLine = tagLine;
+	}
 }

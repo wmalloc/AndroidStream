@@ -15,4 +15,6 @@
     <string name="activity_tweet">Tweet</string>
     <string name="activity_cancel">Cancel</string>
     <string name="action_profile">Profile</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+
 </resources>

@@ -35,16 +35,28 @@ public class StreamClient extends OAuthBaseClient {
         getTimeline("statuses/home_timeline.json", since_id, handler);
     }
     
+    public void getUserTimeline(long since_id, AsyncHttpResponseHandler handler) {
+    	getTimeline("statuses/user_timeline.json", since_id, handler);
+    }
+    
+    public void getMentionsTimeline(long since_id, AsyncHttpResponseHandler handler) {
+    	getTimeline("statuses/mentions_timeline.json", since_id, handler);
+    }
+    
     public void postTweet(String tweet, AsyncHttpResponseHandler handler) {
     	RequestParams params = new RequestParams();
     	params.put("status", tweet);
     	postResource("statuses/update.json", params, handler);
      }
     
+    public void getMyInfo(AsyncHttpResponseHandler handler) {
+    	getResource("account/verify_credentials.json", null, handler);
+    }
+
     public void getAccountSettings(AsyncHttpResponseHandler handler) {
     	getResource("account/settings.json", null, handler);
     }
-
+    
     public void lookupUserForScreenName(String username, AsyncHttpResponseHandler handler) {
     	RequestParams params = new RequestParams();	
     	params.put("screen_name", username);
