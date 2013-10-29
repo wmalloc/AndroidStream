@@ -2,6 +2,8 @@ package net.crimsonresearch.Stream;
 
 import net.crimsonresearch.Stream.Fragments.HomeTimelineFragment;
 import net.crimsonresearch.Stream.Fragments.MentionsTimelineFragment;
+import net.crimsonresearch.Stream.Fragments.TimelineFragment.OnTimelineSelectedListener;
+import net.crimsonresearch.Stream.models.Tweet;
 import net.crimsonresearch.Stream.models.User;
 
 import org.json.JSONObject;
@@ -21,7 +23,7 @@ import android.view.MenuItem;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-public class TimelineActivity extends FragmentActivity implements TabListener {
+public class TimelineActivity extends FragmentActivity implements TabListener, OnTimelineSelectedListener {
 	public static final int COMPOSE_ACTIVITY = 1;
 	public static final String SCREEN_NAME_KEY="screen_name";	
 	User loggedInUser = null;
@@ -124,5 +126,17 @@ public class TimelineActivity extends FragmentActivity implements TabListener {
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+	}
+
+	@Override
+	public void onTweetSelected(Tweet tweet) {
+		Intent i = new Intent(getApplicationContext(), ViewTweetActivity.class);
+		i.putExtra(ViewTweetActivity.TWEET_VIEW_IDENTIFIER_KEY, Long.toString(tweet.getIdentifier()));
+		i.putExtra(ViewTweetActivity.TWEET_VIEW_SCREENNAME_KEY, tweet.getUser().getScreenName());
+		startActivity(i);
+	}
+
+	@Override
+	public void onImageSelected(String userId) {
 	}
 }

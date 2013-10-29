@@ -10,12 +10,16 @@ import net.crimsonresearch.Stream.models.Tweet;
 
 import org.json.JSONArray;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -29,6 +33,12 @@ public class TimelineFragment extends Fragment {
 	private PullToRefreshListView lvTweets;
 	private String resource = null;
 	private String userId = null;
+	OnTimelineSelectedListener mListener;
+	
+	public interface OnTimelineSelectedListener {
+        public void onTweetSelected(Tweet tweet);
+        public void onImageSelected(String userId);
+    }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -36,8 +46,31 @@ public class TimelineFragment extends Fragment {
 	}
 	
 	@Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnTimelineSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnTimelineSelectedListener");
+        }
+   }
+	
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+//		ImageView ivProfileImage = (ImageView) getActivity().findViewById(R.id.ivProfile);
+//		ivProfileImage.setOnTouchListener(new View.OnTouchListener() {
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				String identifier = (String) v.getTag();
+//				if(null != identifier) {
+//					Log.d("DEBUG", "User Identifier = " + identifier);
+//					return true;
+//				}
+//				return false;
+//			}
+//		});
+		
 		lvTweets = (PullToRefreshListView) getActivity().findViewById(R.id.lvTweets);
 		lvTweets.setOnScrollListener(new EndlessScrollListener() {
 		    @Override
@@ -55,6 +88,16 @@ public class TimelineFragment extends Fragment {
 				// place such as when the network request has completed successfully.
 				customLoadMoreDataFromApi(0);
 			}
+		});
+		
+		lvTweets.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+				Tweet tweet = adapter.getItem(position);
+				mListener.onTweetSelected(tweet);
+			}
+			
 		});
 		customLoadMoreDataFromApi(0);
 	}
@@ -101,7 +144,7 @@ public class TimelineFragment extends Fragment {
             }
 		});
 	}
-	
+	    
 	public TweetsAdapter getAdapter() {
 		return adapter;
 	}

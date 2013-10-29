@@ -55,6 +55,10 @@
             android:name="net.crimsonresearch.Stream.ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
+        <activity
+            android:name="net.crimsonresearch.Stream.ViewTweetActivity"
+            android:label="@string/title_activity_view_tweet" >
+        </activity>
     </application>
 
 </manifest>

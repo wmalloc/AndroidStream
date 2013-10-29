@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Locale;
 
 import net.crimsonresearch.Stream.models.Tweet;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -17,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
 	SimpleDateFormat dateFormat = null;
@@ -36,6 +35,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		
 		Tweet tweet = getItem(position);
 		ImageView imageView = (ImageView) view.findViewById(R.id.ivProfile);
+		imageView.setTag(String.valueOf(tweet.getIdentifier()));
 		ImageLoader.getInstance().displayImage(tweet.getUser().getProfileImageUrl(), imageView);
 		
 		TextView tvName = (TextView) view.findViewById(R.id.tvName);
