@@ -137,6 +137,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, O
 	}
 
 	@Override
-	public void onImageSelected(String userId) {
+	public void onImageSelected(User user) {
+		onProfileActivity(user);
 	}
 }

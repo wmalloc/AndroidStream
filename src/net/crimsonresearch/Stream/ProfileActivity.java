@@ -1,6 +1,8 @@
 package net.crimsonresearch.Stream;
 
+import net.crimsonresearch.Stream.Fragments.TimelineFragment.OnTimelineSelectedListener;
 import net.crimsonresearch.Stream.Fragments.UserTimelineFragment;
+import net.crimsonresearch.Stream.models.Tweet;
 import net.crimsonresearch.Stream.models.User;
 
 import org.json.JSONObject;
@@ -16,7 +18,7 @@ import android.widget.TextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class ProfileActivity extends FragmentActivity {
+public class ProfileActivity extends FragmentActivity implements OnTimelineSelectedListener {
 	public static final String USER_PROFILE_KEY="user";
 	private User user = null;
 	
@@ -69,6 +71,18 @@ public class ProfileActivity extends FragmentActivity {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public void onTweetSelected(Tweet tweet) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onImageSelected(User user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

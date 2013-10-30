@@ -7,6 +7,7 @@ import net.crimsonresearch.Stream.R;
 import net.crimsonresearch.Stream.StreamClientApp;
 import net.crimsonresearch.Stream.TweetsAdapter;
 import net.crimsonresearch.Stream.models.Tweet;
+import net.crimsonresearch.Stream.models.User;
 
 import org.json.JSONArray;
 
@@ -16,10 +17,11 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import android.widget.ImageView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -34,15 +36,22 @@ public class TimelineFragment extends Fragment {
 	private String resource = null;
 	private String userId = null;
 	OnTimelineSelectedListener mListener;
+	private ImageView ivProfile;
 	
 	public interface OnTimelineSelectedListener {
         public void onTweetSelected(Tweet tweet);
-        public void onImageSelected(String userId);
+        public void onImageSelected(User user);
     }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_timeline, parent, false);
+		View v = inflater.inflate(R.layout.fragment_timeline, parent, false);
+		
+		setIvProfile((ImageView) v.findViewById(R.id.ivProfile));
+		lvTweets = (PullToRefreshListView) v.findViewById(R.id.lvTweets);
+		adapter = new TweetsAdapter(getActivity(), new ArrayList<Tweet>());
+		lvTweets.setAdapter(adapter);
+		return v;
 	}
 	
 	@Override
@@ -54,24 +63,11 @@ public class TimelineFragment extends Fragment {
             throw new ClassCastException(activity.toString() + " must implement OnTimelineSelectedListener");
         }
    }
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-//		ImageView ivProfileImage = (ImageView) getActivity().findViewById(R.id.ivProfile);
-//		ivProfileImage.setOnTouchListener(new View.OnTouchListener() {
-//			@Override
-//			public boolean onTouch(View v, MotionEvent event) {
-//				String identifier = (String) v.getTag();
-//				if(null != identifier) {
-//					Log.d("DEBUG", "User Identifier = " + identifier);
-//					return true;
-//				}
-//				return false;
-//			}
-//		});
 		
-		lvTweets = (PullToRefreshListView) getActivity().findViewById(R.id.lvTweets);
 		lvTweets.setOnScrollListener(new EndlessScrollListener() {
 		    @Override
 		    public void onLoadMore(int page, int totalItemsCount) {
@@ -91,13 +87,11 @@ public class TimelineFragment extends Fragment {
 		});
 		
 		lvTweets.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
 				Tweet tweet = adapter.getItem(position);
 				mListener.onTweetSelected(tweet);
 			}
-			
 		});
 		customLoadMoreDataFromApi(0);
 	}
@@ -129,12 +123,7 @@ public class TimelineFragment extends Fragment {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if(null == adapter) {
-					adapter = new TweetsAdapter(getActivity(), tweets);
-					lvTweets.setAdapter(adapter);
-				} else {
-					adapter.addAll(tweets);
-				}
+				adapter.addAll(tweets);
 				
 				lvTweets.onRefreshComplete();
 			}
@@ -183,5 +172,13 @@ public class TimelineFragment extends Fragment {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public ImageView getIvProfile() {
+		return ivProfile;
+	}
+
+	public void setIvProfile(ImageView ivProfile) {
+		this.ivProfile = ivProfile;
 	}
 }
