@@ -6,18 +6,18 @@ import org.json.JSONObject;
 
 public class User implements Serializable {
  	private static final long serialVersionUID = 9168779711685542730L;
- 	JSONObject user = null;
-	private String name;
-    private String screenName;
-    private String profileImageUrl;
-    private String tagLine;
-    private long identifier;
-    private int statusesCount;
-    private int followersCount;
-    private int friendsCount;
+ 	private JSONObject _user = null;
+	private String _name;
+    private String _screenName;
+    private String _profileImageUrl;
+    private String _tagLine;
+    private long _identifier;
+    private int _statusesCount;
+    private int _followersCount;
+    private int _friendsCount;
 
     public User(JSONObject json) {
-      	user = json;
+      	setUser(json);
       	try {
             setScreenName(json.getString("screen_name"));
             setProfileImageUrl(json.getString("profile_image_url"));
@@ -33,66 +33,74 @@ public class User implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return _name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this._name = name;
     }
 
     public String getScreenName() {
-        return screenName;
+        return _screenName;
     }
 
     public void setScreenName(String screenName) {
-        this.screenName = screenName;
+        this._screenName = screenName;
     }
 
     public String getProfileImageUrl() {
-        return profileImageUrl;
+        return _profileImageUrl;
     }
 
     public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
+        this._profileImageUrl = profileImageUrl;
     }
 
     public long getIdentifier() {
-        return identifier;
+        return _identifier;
     }
 
     public void setIdentifier(long identifier) {
-        this.identifier = identifier;
+        this._identifier = identifier;
     }
 
     public int getStatusesCount() {
-        return statusesCount;
+        return _statusesCount;
     }
 
     public void setStatusesCount(int statues_count) {
-        this.statusesCount = statues_count;
+        this._statusesCount = statues_count;
     }
 
     public int getFollowersCount() {
-        return followersCount;
+        return _followersCount;
     }
 
     public void setFollowersCount(int followersCount) {
-        this.followersCount = followersCount;
+        this._followersCount = followersCount;
     }
 
     public int getFriendsCount() {
-        return friendsCount;
+        return _friendsCount;
     }
 
     public void setFriendsCount(int friendsCount) {
-        this.friendsCount = friendsCount;
+        this._friendsCount = friendsCount;
     }
 
 	public String getTagLine() {
-		return tagLine;
+		return _tagLine;
 	}
 
 	public void setTagLine(String tagLine) {
-		this.tagLine = tagLine;
+		this._tagLine = tagLine;
+	}
+
+	public JSONObject getUser() {
+		return _user;
+	}
+
+	public void setUser(JSONObject user) {
+		this._user = user;
 	}
 }

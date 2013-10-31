@@ -20,7 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ProfileActivity extends FragmentActivity implements OnTimelineSelectedListener {
 	public static final String USER_PROFILE_KEY="user";
-	private User user = null;
+	private User _user = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +32,9 @@ public class ProfileActivity extends FragmentActivity implements OnTimelineSelec
 		fragment.setUserId(user_id);
 		StreamClientApp.getRestClient().getUserForIdentifier(user_id, new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject jsonUser) {
-				user = new User(jsonUser);
-				setTitle("@" + user.getScreenName());
-				populateProfileHeader(user);
+				_user = new User(jsonUser);
+				setTitle("@" + _user.getScreenName());
+				populateProfileHeader(_user);
 			}
 			
             public void onFailure(Throwable e) {
@@ -66,11 +66,11 @@ public class ProfileActivity extends FragmentActivity implements OnTimelineSelec
 	}
 	
 	public User getUser() {
-		return user;
+		return _user;
 	}
 
 	public void setUser(User user) {
-		this.user = user;
+		this._user = user;
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class ProfileActivity extends FragmentActivity implements OnTimelineSelec
 	}
 
 	@Override
-	public void onImageSelected(User user) {
+	public void onImageSelected(String identifier) {
 		// TODO Auto-generated method stub
 		
 	}

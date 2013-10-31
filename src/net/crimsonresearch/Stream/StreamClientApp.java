@@ -16,12 +16,12 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
  *     
  */
 public class StreamClientApp extends com.activeandroid.app.Application {
-	private static Context context;
+	private static Context _context;
 	
     @Override
     public void onCreate() {
         super.onCreate();
-        StreamClientApp.context = this;
+        StreamClientApp._context = this;
         
         // Create global configuration and initialize ImageLoader with this configuration
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().build();
@@ -30,6 +30,6 @@ public class StreamClientApp extends com.activeandroid.app.Application {
     }
     
     public static StreamClient getRestClient() {
-    	return (StreamClient) StreamClient.getInstance(StreamClient.class, StreamClientApp.context);
+    	return (StreamClient) StreamClient.getInstance(StreamClient.class, StreamClientApp._context);
     }
 }

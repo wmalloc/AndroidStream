@@ -26,7 +26,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class TimelineActivity extends FragmentActivity implements TabListener, OnTimelineSelectedListener {
 	public static final int COMPOSE_ACTIVITY = 1;
 	public static final String SCREEN_NAME_KEY="screen_name";	
-	User loggedInUser = null;
+	User _loggedInUser = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, O
 	            onComposeActivity();
 	            return true;
 	    	case R.id.action_profile:
-	    		onProfileActivity(loggedInUser);
+	    		onProfileActivity(Long.toString(_loggedInUser.getIdentifier()));
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -78,19 +78,20 @@ public class TimelineActivity extends FragmentActivity implements TabListener, O
 	
 	private void onComposeActivity() {
 		Intent i = new Intent(getApplicationContext(), ComposeTweet.class);
-		i.putExtra(SCREEN_NAME_KEY, loggedInUser.getScreenName());
+		i.putExtra(SCREEN_NAME_KEY, _loggedInUser.getScreenName());
 		startActivityForResult(i, COMPOSE_ACTIVITY);
 	}
 	
-	private void onProfileActivity(User user) {
+	private void onProfileActivity(String identifier) {
 		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-		i.putExtra(ProfileActivity.USER_PROFILE_KEY, Long.toString(user.getIdentifier()));
+		i.putExtra(ProfileActivity.USER_PROFILE_KEY, identifier);
 		startActivity(i);
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == COMPOSE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+			// Move this call to fragment when it comes to view.
 			//customLoadMoreDataFromApi(0);
 		}
 	}
@@ -98,8 +99,8 @@ public class TimelineActivity extends FragmentActivity implements TabListener, O
     public void getUserInfo() {
 		StreamClientApp.getRestClient().getMyInfo(new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject jsonUser) {
-				loggedInUser = new User(jsonUser);
-				setTitle("@" + loggedInUser.getScreenName());
+				_loggedInUser = new User(jsonUser);
+				setTitle("@" + _loggedInUser.getScreenName());
 			}
 			
             public void onFailure(Throwable e) {
@@ -137,7 +138,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, O
 	}
 
 	@Override
-	public void onImageSelected(User user) {
-		onProfileActivity(user);
+	public void onImageSelected(String identifier) {
+		onProfileActivity(identifier);
 	}
 }

@@ -18,12 +18,12 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
-	SimpleDateFormat dateFormat = null;
+	private SimpleDateFormat _dateFormat = null;
 	
 	public TweetsAdapter(Context context, List<Tweet> tweets) {
 		super(context, 0, tweets);
-		dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
-		dateFormat.setLenient(false);
+		_dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
+		_dateFormat.setLenient(false);
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -34,7 +34,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		}
 		
 		Tweet tweet = getItem(position);
-		ImageView imageView = (ImageView) view.findViewById(R.id.ivProfile);
+		ImageView imageView = (ImageView) view.findViewById(R.id.ivTweetProfile);
 		imageView.setTag(String.valueOf(tweet.getIdentifier()));
 		ImageLoader.getInstance().displayImage(tweet.getUser().getProfileImageUrl(), imageView);
 		
@@ -58,7 +58,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
     public String twitterHumanFriendlyDate(String dateStr) {
 		Date created = null;
 		try {
-			created = (Date) dateFormat.parse(dateStr);
+			created = (Date) _dateFormat.parse(dateStr);
 		} catch (Exception e) {
 			return null;
 		}

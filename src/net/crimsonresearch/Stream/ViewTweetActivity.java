@@ -1,5 +1,6 @@
 package net.crimsonresearch.Stream;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 // http://twitter.com/screenName/status/identifier	
+@SuppressLint("SetJavaScriptEnabled")
 public class ViewTweetActivity extends Activity {
 	public static String TWEET_VIEW_SCREENNAME_KEY = "screenName";
 	public static String TWEET_VIEW_IDENTIFIER_KEY = "identifier";

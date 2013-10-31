@@ -17,10 +17,11 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ImageView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -30,27 +31,27 @@ import eu.erikw.PullToRefreshListView;
 import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
 public class TimelineFragment extends Fragment {
-	private TweetsAdapter adapter;
-	private Long lastId = 0L;
-	private PullToRefreshListView lvTweets;
-	private String resource = null;
-	private String userId = null;
-	OnTimelineSelectedListener mListener;
-	private ImageView ivProfile;
+	private TweetsAdapter _adapter;
+	private Long _lastId = 0L;
+	private PullToRefreshListView _lvTweets;
+	private String _resource = null;
+	private String _userId = null;
+	private OnTimelineSelectedListener _listener;
+	private ImageView _ivProfile;
 	
 	public interface OnTimelineSelectedListener {
         public void onTweetSelected(Tweet tweet);
-        public void onImageSelected(User user);
+        public void onImageSelected(String identifier);
     }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_timeline, parent, false);
 		
-		setIvProfile((ImageView) v.findViewById(R.id.ivProfile));
-		lvTweets = (PullToRefreshListView) v.findViewById(R.id.lvTweets);
-		adapter = new TweetsAdapter(getActivity(), new ArrayList<Tweet>());
-		lvTweets.setAdapter(adapter);
+		_ivProfile = (ImageView) v.findViewById(R.id.ivTweetProfile);
+		_lvTweets = (PullToRefreshListView) v.findViewById(R.id.lvTweets);
+		_adapter = new TweetsAdapter(getActivity(), new ArrayList<Tweet>());
+		_lvTweets.setAdapter(_adapter);
 		return v;
 	}
 	
@@ -58,7 +59,7 @@ public class TimelineFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnTimelineSelectedListener) activity;
+            _listener = (OnTimelineSelectedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnTimelineSelectedListener");
         }
@@ -68,14 +69,14 @@ public class TimelineFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		lvTweets.setOnScrollListener(new EndlessScrollListener() {
+		_lvTweets.setOnScrollListener(new EndlessScrollListener() {
 		    @Override
 		    public void onLoadMore(int page, int totalItemsCount) {
 		        customLoadMoreDataFromApi(page); 
 		    }
 	    });
 		
-		lvTweets.setOnRefreshListener(new OnRefreshListener() {
+		_lvTweets.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
 				// Your code to refresh the list contents
@@ -86,11 +87,20 @@ public class TimelineFragment extends Fragment {
 			}
 		});
 		
-		lvTweets.setOnItemClickListener(new OnItemClickListener() {
+		_lvTweets.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-				Tweet tweet = adapter.getItem(position);
-				mListener.onTweetSelected(tweet);
+				Tweet tweet = _adapter.getItem(position);
+				_listener.onTweetSelected(tweet);
+			}
+		});
+
+		_lvTweets.setOnItemLongClickListener(new OnItemLongClickListener () {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long id) {
+				Tweet tweet = _adapter.getItem(position);
+				_listener.onImageSelected(Long.toString(tweet.getUser().getIdentifier()));
+				return false;
 			}
 		});
 		customLoadMoreDataFromApi(0);
@@ -98,34 +108,34 @@ public class TimelineFragment extends Fragment {
 
 	private void customLoadMoreDataFromApi(int page) {
 		if(page == 0) {
-			lastId = (long) 0;
+			_lastId = (long) 0;
 			try {
-				adapter.clear();
+				_adapter.clear();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		RequestParams params = new RequestParams();
-		if(lastId > 0) {
-			params.put("since_id", Long.toString(lastId));
+		if(_lastId > 0) {
+			params.put("since_id", Long.toString(_lastId));
 		}
 		
-		if(null != userId) {
-			params.put("user_id", userId);
+		if(null != _userId) {
+			params.put("user_id", _userId);
 		}
-		StreamClientApp.getRestClient().getTimeline(resource, params, new JsonHttpResponseHandler() {
+		StreamClientApp.getRestClient().getTimeline(_resource, params, new JsonHttpResponseHandler() {
 			public void onSuccess(JSONArray jsonTweets) {
 				ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
 				int count = tweets.size();
 				try {
 					Tweet lastTweet =  tweets.get(count - 1);
-					lastId = lastTweet.getIdentifier();
+					_lastId = lastTweet.getIdentifier();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				adapter.addAll(tweets);
+				_adapter.addAll(tweets);
 				
-				lvTweets.onRefreshComplete();
+				_lvTweets.onRefreshComplete();
 			}
 			
             public void onFailure(Throwable e) {
@@ -135,50 +145,50 @@ public class TimelineFragment extends Fragment {
 	}
 	    
 	public TweetsAdapter getAdapter() {
-		return adapter;
+		return _adapter;
 	}
 
 	public void setAdapter(TweetsAdapter adapter) {
-		this.adapter = adapter;
+		this._adapter = adapter;
 	}
 
 	public Long getLastId() {
-		return lastId;
+		return _lastId;
 	}
 
 	public void setLastId(Long lastId) {
-		this.lastId = lastId;
+		this._lastId = lastId;
 	}
 
 	public String getResource() {
-		return resource;
+		return _resource;
 	}
 
 	public void setResource(String resource) {
-		this.resource = resource;
+		this._resource = resource;
 	}
 
 	public PullToRefreshListView getLvTweets() {
-		return lvTweets;
+		return _lvTweets;
 	}
 
 	public void setLvTweets(PullToRefreshListView lvTweets) {
-		this.lvTweets = lvTweets;
+		this._lvTweets = lvTweets;
 	}
 
 	public String getUserId() {
-		return userId;
+		return _userId;
 	}
 
 	public void setUserId(String userId) {
-		this.userId = userId;
+		this._userId = userId;
 	}
 
 	public ImageView getIvProfile() {
-		return ivProfile;
+		return _ivProfile;
 	}
 
 	public void setIvProfile(ImageView ivProfile) {
-		this.ivProfile = ivProfile;
+		this._ivProfile = ivProfile;
 	}
 }

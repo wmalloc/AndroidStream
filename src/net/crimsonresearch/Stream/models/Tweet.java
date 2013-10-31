@@ -9,17 +9,17 @@ import org.json.JSONObject;
 
 public class Tweet implements Serializable {
 	private static final long serialVersionUID = -2918583239683010830L;
-	JSONObject tweet;
-	private User user;
-	private long identifier;
-	private boolean favorited;
-	private String createdAt;
-	private boolean isRetweeted;
-	private String body;
+	private JSONObject _tweet;
+	private User _user;
+	private long _identifier;
+	private boolean _favorited;
+	private String _createdAt;
+	private boolean _isRetweeted;
+	private String _body;
 
 	public Tweet(JSONObject jsonObject) {
 		try {
-			tweet = jsonObject;
+			setTweet(jsonObject);
 			setUser(new User(jsonObject.getJSONObject("user")));
 	        setIdentifier(jsonObject.getLong("id"));
 	        setFavorited(jsonObject.getBoolean("favorited"));
@@ -53,50 +53,58 @@ public class Tweet implements Serializable {
     }
 
 	public User getUser() {
-		return user;
+		return _user;
 	}
 
 	public void setUser(User user) {
-		this.user = user;
+		this._user = user;
 	}
 
 	public long getIdentifier() {
-		return identifier;
+		return _identifier;
 	}
 
 	public void setIdentifier(long identifier) {
-		this.identifier = identifier;
+		this._identifier = identifier;
 	}
 
 	public boolean isFavorited() {
-		return favorited;
+		return _favorited;
 	}
 
 	public void setFavorited(boolean favorited) {
-		this.favorited = favorited;
+		this._favorited = favorited;
 	}
 
 	public String getCreatedAt() {
-		return createdAt;
+		return _createdAt;
 	}
 
 	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
+		this._createdAt = createdAt;
 	}
 
 	public boolean isRetweeted() {
-		return isRetweeted;
+		return _isRetweeted;
 	}
 
 	public void setRetweeted(boolean isRetweeted) {
-		this.isRetweeted = isRetweeted;
+		_isRetweeted = isRetweeted;
 	}
 
 	public String getBody() {
-		return body;
+		return _body;
 	}
 
 	public void setBody(String body) {
-		this.body = body;
+		this._body = body;
+	}
+
+	public JSONObject getTweet() {
+		return _tweet;
+	}
+
+	public void setTweet(JSONObject _tweet) {
+		this._tweet = _tweet;
 	}
 }
